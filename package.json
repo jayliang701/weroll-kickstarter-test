@@ -1,0 +1,19 @@
+{
+  "name": "weroll-test",
+  "version": "1.0.0",
+  "description": "The test suites of weroll.",
+  "main": "main.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "mocha": "^3.2.0",
+    "weroll": "^1.0.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node.exe --harmony-async-await node_modules/mocha/bin/_mocha --ui bdd --recursive test"
+  },
+  "author": "Jay Liang",
+  "license": "MIT"
+}
