@@ -13,16 +13,23 @@ app.addTask(function(cb) {
         cb(err);
     });
 });
-app.addTask(async function () {
-    await Model.DB.insert("Customer", { name:"Jay", gender:1, phone:"18621601670" });
-
-    var doc = await Model.DB.findOne("Customer", { name:"Jay" });
-
-    await Model.DB.insert("Customer", { name:"Heng", gender:1, phone:"18621601671" });
-    doc = await Model.DB.find("Customer", { gender:1 });
-
-    await Model.DB.insert("Customer", { name:"Heng", gender:1, phone:"18621601671" });
-    doc = await Model.DB.find("Customer", { gender:1 });
+app.addTask(function(cb) {
+    /* enable CORS
+     */
+     require("weroll/web/WebRequestPreprocess").inject("middle", function(req, res, next) {
+         console.log('request header ---> cache-control: ', req.headers["cache-control"]);
+         console.log('request cookie ---> identifyid : ', req.cookies.identifyid);
+         next();
+     });
+    //create and start a web application
+    var webApp = require("weroll/web/APIServer").createServer();
+    webApp.start(Setting, function(webApp) {
+        /* setup Ecosystem if you need
+         */
+        var Ecosystem = require("weroll/eco/Ecosystem");
+        Ecosystem.init();
+        cb();
+    });
 });
 
 app.run();

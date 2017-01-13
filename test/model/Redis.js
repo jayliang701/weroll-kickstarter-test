@@ -9,8 +9,11 @@ var Redis = require("weroll/model/Redis");
 
 describe('Redis',function() {
 
-    before(async function () {
+    before(function (done) {
         //do something you need before run test cases.
+        Redis.findKeysAndDel("*", function() {
+            done();
+        });
     });
 
     //each it code block is a test case
@@ -46,7 +49,7 @@ describe('Redis',function() {
     it('save', async function() {
         var result = await Redis.save("name", "JayX");
         assert(result);
-        assert.equal(result, "OK");
+        assert.equal(result, "JayX");
     });
 
     it('read', async function() {
@@ -56,9 +59,10 @@ describe('Redis',function() {
     });
 
     it('save object', async function() {
-        var result = await Redis.save("name", { first:"Jay", last:"Liang" });
+        var val = { first:"Jay", last:"Liang" };
+        var result = await Redis.save("name", val);
         assert(result);
-        assert.equal(result, "OK");
+        assert.equal(result, val);
     });
 
     it('read object', async function() {

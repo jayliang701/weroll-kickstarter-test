@@ -85,16 +85,16 @@ module.exports = {
     },
     */
     cdn:{
-        res:"http://localhost:3100"
+        res:"http://localhost:63342/code/kickstarter/test/client/res"
     },
 
     ecosystem: {
-        name: "weroll_mini",
-        port: 3001,
+        name: "test",
+        port: 3101,
         servers : {
-            "another_weroll_app" : {
-                message:"127.0.0.1:3004",
-                api:"127.0.0.1:3002/api"
+            "mini" : {
+                message:"127.0.0.1:3001",
+                api:"127.0.0.1:3000/api"
             }
         }
     }

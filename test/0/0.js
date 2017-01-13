@@ -5,6 +5,7 @@
 var Initor = require("../../server/tools/UnitTestInitor");
 var assert = require("assert");
 var Model = require("weroll/model/Model");
+var Redis = require("weroll/model/Redis");
 
 describe('0',function() {
 
@@ -17,6 +18,13 @@ describe('0',function() {
     it('Model.init', function(done){
         Model.init(global.SETTING.model, function(err) {
             assert.equal(err, undefined);
+            done();
+        });
+    });
+
+    after(function (done) {
+        //do something you need after run test cases.
+        Redis.findKeysAndDel("*", function() {
             done();
         });
     });
