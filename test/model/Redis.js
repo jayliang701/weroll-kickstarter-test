@@ -79,17 +79,17 @@ describe('Redis',function() {
     });
 
     it('do', async function() {
-        var result = await Redis.do("set", [ "name", "Jay" ]);
+        var result = await Redis.do("set", [ Redis.join("name"), "Jay" ]);
         assert(result);
         assert.equal(result, "OK");
     });
 
     it('multi', async function() {
         var tasks = [
-            [ "set", "name", "JayX", function(err, res) {
+            [ "set", Redis.join("name"), "JayX", function(err, res) {
                 assert.equal(res, "OK");
             } ],
-            [ "get", "name", function(err, res) {
+            [ "get", Redis.join("name"), function(err, res) {
                 assert.equal(res, "JayX");
             } ]
         ];
@@ -102,6 +102,51 @@ describe('Redis',function() {
         assert.equal(result, global.SETTING.model.redis.prefix["*"] + "name");
         result = Redis.join("@common->name");
         assert.equal(result, global.SETTING.model.redis.prefix["common"] + "name");
+    });
+
+    it('key prefix', async function() {
+        var tasks = [
+            [ "set", Redis.join("name"), "JayX", function(err, res) {
+                assert.equal(res, "OK");
+            } ],
+            [ "get", Redis.join("name"), function(err, res) {
+                assert.equal(res, "JayX");
+            } ],
+
+            [ "set", Redis.join("@common->name"), "JayX", function(err, res) {
+                assert.equal(res, "OK");
+            } ],
+            [ "get", Redis.join("@common->name"), function(err, res) {
+                assert.equal(res, "JayX");
+            } ],
+
+            [ "set", Redis.join("@site->name"), "JayX", function(err, res) {
+                assert.equal(res, "OK");
+            } ],
+            [ "get", Redis.join("@site->name"), function(err, res) {
+                assert.equal(res, "JayX");
+            } ]
+        ];
+        await Redis.multi(tasks);
+        assert.ok(true);
+    });
+
+    it('pub/sub', function(done) {
+        Redis.createClient(null, function(sub) {
+            assert(sub);
+
+            sub.on("message", function(channel, message) {
+                assert(channel);
+                assert(message);
+                assert.equal(channel, "talk");
+                assert.equal(message, "hi");
+                done();
+            });
+            sub.subscribe("talk", function(err) {
+                assert.equal(err, undefined);
+                Redis.publish("talk", "hi");
+            });
+        });
     });
 
     it('checkLock', async function() {
