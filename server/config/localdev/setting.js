@@ -22,8 +22,9 @@ module.exports = {
             host:"127.0.0.1",
             port:6379,
             prefix:{
-                "*": "weroll_test_",
-                common: "weroll_test_common_"
+                "*": "weroll_test_",      //default prefix
+                common: "weroll_common_",     //another prefix
+                site: "weroll_site_"     //another prefix
             },
             ttl:24 * 60 * 60,  //sec,
             pass:"",
@@ -34,14 +35,12 @@ module.exports = {
     },
 
     session: {
-        /* user access session config. enable redis first
+        /* user access session config. enable redis first */
         onePointEnter:true,
         cookiePath:"/",
-        secret:"weroll123gowe",
-        cacheExpireTime:3 * 60 * 1000,
-        tokenExpireTime:24 * 60 * 60 * 1000,  //million sec
+        cacheExpireTime:3 * 60,  //sec
+        tokenExpireTime:24 * 60 * 60,  //sec
         cookieExpireTime:24 * 60 * 60 * 1000  //million sec
-        */
     },
 
     upload: {
