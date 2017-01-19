@@ -73,7 +73,13 @@ describe('Session',function() {
         assert(result);
         assert.equal(result.userid, sess2.userid);
 
-        await sleep(1100);
+        await sleep(600);
+
+        result = await Session2.check(sess2.userid, sess2.token);
+        assert(result);
+        assert.equal(result.userid, sess2.userid);
+
+        await sleep(600);
 
         result = await Session2.check(sess2.userid, sess2.token);
         assert.equal(result, undefined);
