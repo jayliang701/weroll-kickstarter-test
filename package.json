@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "mocha": "^3.2.0",
-    "weroll": "^1.0.7"
+    "weroll": "^1.0.10"
   },
   "devDependencies": {},
   "scripts": {

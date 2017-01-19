@@ -77,4 +77,22 @@ describe('SMSUtil',function() {
         await SMSUtil.sendWithTemplate(phone, "test", { name:"Jay" }, { enforce:true });
         assert.ok(true);
     });
+
+    it('custom proxy', function(done) {
+        var flag = false;
+        var MyProxy = {};
+        MyProxy.send = async function(phone, msg, option, callBack) {
+            await sleep(50);
+            assert(phone);
+            assert(msg);
+            flag = true;
+            callBack();
+        };
+        SMSUtil.setProxy(MyProxy);
+        SMSUtil.send(phone, "welcome", { enforce:true, simulate:false }, function(err) {
+            assert.equal(err, undefined);
+            assert.equal(flag, true);
+            done();
+        });
+    });
 });

@@ -119,15 +119,17 @@
                         ele += '</optgroup>';
                         selector.append(ele);
                     });
+                    if ($getCookie('userid') && $getCookie("token")) {
+                        $user.isLogined = true;
+                        $user.userid = $user.id = $getCookie('userid');
+                        $user.token = $getCookie('token');
+                        $user.tokentimestamp = Number($getCookie('tokentimestamp'));
+                    }
 
                     if ($user && $user.isLogined) {
                         var info = 'id: ' + $user.id + '<br>';
-                        info += 'username: ' + $user.username + '<br>';
-                        info += 'phone: ' + $user.phone + '<br>';
-                        info += 'email: ' + $user.email + '<br>';
-                        info += 'name: ' + $user.name + '<br>';
-                        info += 'nickname: ' + $user.nickname + '<br>';
-                        info += 'type: ' + $user.type + '<br>';
+                        info += 'token: ' + $user.token + '<br>';
+                        info += 'tokentimestamp: ' + $user.tokentimestamp + '<br>';
                         $('#userInfo').html('<br>' + info);
                     }
                 },
@@ -151,6 +153,7 @@
             info.append('<p>接口名称: <b>' + api.name + '</b></p>');
             info.append('<p>接口描述: <b>' + api.desc + '</b></p>');
             info.append('<p>需要登录: <b>' + (api.security.needLogin ? '是' : '否') + '</b></p>');
+            info.append('<p>特殊权限: <b>' + (api.security.allow ? JSON.stringify(api.security.allow) : '无') + '</b></p>');
             var params = "";
             for (var key in api.security.checkParams) {
                 params += '<p style="padding-left: 10px;"><b>- ' + key + '&nbsp;&nbsp;[' + api.security.checkParams[key] + ']</b>';
