@@ -23,19 +23,22 @@ describe('Mongoose',function() {
     it('DAOFactory.init', function (done) {
         var folder = require("path").join(global.APP_ROOT, "server/dao");
         var DAOFactory = require("weroll/dao/DAOFactory");
-        DAOFactory.init(Model.getDBByName(), folder);
-        DAOFactory.releaseDBLocks( function(err) {
+        DAOFactory.init(Model.getDBByName(), { folder:folder }, function(err) {
             assert.equal(err, undefined);
 
-            var model = DAOFactory.create("User");
-            assert(model);
+            DAOFactory.releaseDBLocks( function(err) {
+                assert.equal(err, undefined);
 
-            var DAOModel = User;
-            assert(DAOModel);
-            assert(DAOModel.findOne);
-            assert.equal(DAOModel.modelName, "User");
+                var model = DAOFactory.create("User");
+                assert(model);
 
-            done();
+                var DAOModel = User;
+                assert(DAOModel);
+                assert(DAOModel.findOne);
+                assert.equal(DAOModel.modelName, "User");
+
+                done();
+            });
         });
 
     });
