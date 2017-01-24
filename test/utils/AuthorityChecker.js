@@ -5,7 +5,7 @@
 var assert = require("assert");
 var AuthorityChecker = require("weroll/utils/AuthorityChecker");
 
-describe('SMSUtil',function() {
+describe('AuthorityChecker',function() {
 
     before(function (done) {
         //do something you need before run test cases.
