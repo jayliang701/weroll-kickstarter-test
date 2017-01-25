@@ -20,11 +20,31 @@ describe('Model',function() {
         assert.equal(result, val);
     });
 
+    it('cacheSave with callback', function(done){
+        var val = "Jay";
+        Model.cacheSave("name", val, function(err, result) {
+            assert.equal(err, undefined);
+            assert(result);
+            assert.equal(result, val);
+            done();
+        });
+    });
+
     it('cacheRead', async function(){
         var val = "Jay";
         var result = await Model.cacheRead("name");
         assert(result);
         assert.equal(result, val);
+    });
+
+    it('cacheRead with callback', function(done){
+        var val = "Jay";
+        Model.cacheRead("name", 1, function(err, result) {
+            assert.equal(err, undefined);
+            assert(result);
+            assert.equal(result, val);
+            done();
+        });
     });
 
     it('cacheSave with expire', async function(){
