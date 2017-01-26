@@ -204,4 +204,111 @@ describe('Model',function() {
         assert.equal(result, undefined);
     });
 
+    it('custom cache handler', async function() {
+
+        var fs = require("fs");
+        var path = require("path");
+        var mkdirp = require("mkdirp");
+        var del = require("del");
+
+        var CACHE_FOLDER = path.join(__dirname, '../.tmp');
+
+        //clean cache folder
+        try {
+            await del(CACHE_FOLDER);
+        } catch (exp) { }
+
+        //remake cache folder
+        var err;
+        try {
+            await (function() {
+                return new Promise(function(resolve, reject) {
+                    mkdirp(CACHE_FOLDER, function(err) {
+                        err ? reject(err) : resolve();
+                    });
+                });
+            })();
+        } catch (exp) {
+            err = exp;
+        }
+        assert.equal(err, undefined);
+
+        var FileCache = {};
+        FileCache.setExpireTime = function(key, val) {
+            //暂不实现
+        }
+
+        FileCache.registerExpiredTime = function(key, expireTime) {
+            //暂不实现
+        }
+
+        FileCache.save = function(key, val, expireTime, callBack) {
+            return new Promise(function(resolve, reject) {
+                if (key instanceof Array) key = key.join("-");
+                var cache = typeof val == "object" ? JSON.stringify(val) : val;
+                fs.writeFile(path.join(CACHE_FOLDER, key), cache, { encoding:"utf8" }, function(err) {
+                    if (callBack) return callBack(err, val);
+                    err ? reject(err) : resolve(val);
+                });
+            });
+        }
+
+        FileCache.read = function(key, callBack) {
+            return new Promise(function(resolve, reject) {
+                if (key instanceof Array) key = key.join("-");
+                fs.readFile(path.join(CACHE_FOLDER, key), { encoding:"utf8" }, function(err, cache) {
+                    if (err && err.code == "ENOENT") {
+                        //file is not exist
+                        err = null;
+                        cache = null;
+                    }
+                    var val = cache;
+                    if (val) {
+                        try {
+                            val = JSON.parse(cache);
+                        } catch (exp) {
+                            //it is a non-object value
+                            val = cache;
+                        }
+                    }
+                    if (callBack) return callBack(err, val);
+                    err ? reject(err) : resolve(val);
+                });
+            });
+        }
+
+        FileCache.remove = function(key, callBack) {
+            return new Promise(function(resolve, reject) {
+                if (key instanceof Array) key = key.join("-");
+                fs.unlink(path.join(CACHE_FOLDER, key), function(err) {
+                    if (err && err.code == "ENOENT") {
+                        //no such file, ignores this error
+                        err = null;
+                    }
+                    if (callBack) return callBack(err);
+                    err ? reject(err) : resolve();
+                });
+            });
+        }
+
+        Model.registerCacheSystem(3, FileCache);
+
+        //start test FileCache
+        var val = { name:"Jay" };
+        var result = await Model.cacheSave("user", val, null, 3);
+        assert(result);
+        assert.equal(result, val);
+
+        result = await Model.cacheRead("user", 3);
+        assert(result);
+        assert.equal(result.name, val.name);
+
+        await Model.cacheRemove("user", 3);
+
+        result = await Model.cacheRead("user", 3);
+        assert.equal(result, undefined);
+
+        await Model.cacheRemove("user", 3);
+    });
+
 });
