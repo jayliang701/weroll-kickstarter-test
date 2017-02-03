@@ -16,7 +16,7 @@ describe('ValidationCode',function() {
     var code;
 
     //each it code block is a test case
-    it('generate', async function(){
+    it('send', async function(){
 
         vc = new VCode();
         code = await vc.generate("test");

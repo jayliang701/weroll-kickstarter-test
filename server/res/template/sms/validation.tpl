@@ -1,0 +1,3 @@
+
+**********%*********
+validation code: %code%
