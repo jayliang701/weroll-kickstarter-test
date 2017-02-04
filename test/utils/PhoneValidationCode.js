@@ -14,8 +14,6 @@ describe('PhoneValidationCode',function() {
         //do something you need before run test cases.
 
         var config = {
-            api:"http://utf8.sms.webchinese.cn/?Uid=淘迪叔叔",
-            secret:"87854cc77db024eddf72",
             limit: {
                 duration:1000,   //milli sec
                 maxPerDay:2
