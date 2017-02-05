@@ -42,4 +42,26 @@ describe('MailUtil',function() {
             assert.equal(exp, undefined);
         }
     });
+
+    it('send as html', async function(){
+        try {
+            var content = {
+                plain:"Hi user,\r\nxxxxx...",
+                html:"Hi user,<br>xxxxx..."
+            };
+            await MailUtil.send("xxxxxx@qq.com", "Hello", content);
+            assert.ok(true);
+        } catch (exp) {
+            assert.equal(exp, undefined);
+        }
+    });
+
+    it('send with template', async function(){
+        try {
+            await MailUtil.sendWithTemplate("xxxxxx@qq.com", "welcome");
+            assert.ok(true);
+        } catch (exp) {
+            assert.equal(exp, undefined);
+        }
+    });
 });

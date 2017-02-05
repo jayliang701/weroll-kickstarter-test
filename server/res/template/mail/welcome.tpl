@@ -1,3 +1,3 @@
 Welcome %name%
 **********%*********
-This is test template. site: %site%   name: %name%
+This is test template. \r\nsite: %site%   name: %name%
