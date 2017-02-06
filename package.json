@@ -11,7 +11,7 @@
     "mkdirp": "^0.5.1",
     "mocha": "^3.2.0",
     "nodemailer": "^3.0.1",
-    "weroll": "^1.0.23"
+    "weroll": "^1.0.24"
   },
   "devDependencies": {},
   "scripts": {
