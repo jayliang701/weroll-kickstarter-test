@@ -104,8 +104,25 @@ describe('Model',function() {
         assert.equal(result, undefined);
     });
 
+    it('handle cache with config general', async function(){
+        var key = [ "name", "100001" ];
+        var val = "Jay";
+        var result = await Model.cacheSave(key, val);
+        assert(result);
+        assert.equal(result, val);
+
+        result = await Model.cacheRead(key);
+        assert(result);
+        assert.equal(result, val);
+
+        await sleep(1200);
+
+        result = await Model.cacheRead(key);
+        assert.equal(result, undefined);
+    });
+
     it('handle cache with config 1', async function(){
-        var key = [ "test", "iam_a_cache_key_1" ];
+        var key = "test.iam_a_cache_key_1";
         var val = "Jay";
         var result = await Model.cacheSave(key, val);
         assert(result);
@@ -121,7 +138,7 @@ describe('Model',function() {
     });
 
     it('handle cache with config 2', async function(){
-        var key = [ "test", "iam_a_cache_key_2" ];
+        var key = "test.iam_a_cache_key_2";
         var val = "Jay";
         var result = await Model.cacheSave(key, val);
         assert(result);
@@ -136,7 +153,7 @@ describe('Model',function() {
     });
 
     it('handle cache with config 3', async function(){
-        var key = [ "test", "iam_a_cache_key_3" ];
+        var key = "test.iam_a_cache_key_3";
         var val = "Jay";
         var result = await Model.cacheSave(key, val);
         assert(result);
@@ -151,7 +168,7 @@ describe('Model',function() {
     });
 
     it('handle cache with config 4', async function(){
-        var key = [ "test", "iam_a_cache_key_4" ];
+        var key = "test.iam_a_cache_key_4";
         var val = "Jay";
         var result = await Model.cacheSave(key, val);
         assert(result);
@@ -244,7 +261,7 @@ describe('Model',function() {
 
         FileCache.save = function(key, val, expireTime, callBack) {
             return new Promise(function(resolve, reject) {
-                if (key instanceof Array) key = key.join("-");
+                if (key instanceof Array) key = key.join(".");
                 var cache = typeof val == "object" ? JSON.stringify(val) : val;
                 fs.writeFile(path.join(CACHE_FOLDER, key), cache, { encoding:"utf8" }, function(err) {
                     if (callBack) return callBack(err, val);
@@ -255,7 +272,7 @@ describe('Model',function() {
 
         FileCache.read = function(key, callBack) {
             return new Promise(function(resolve, reject) {
-                if (key instanceof Array) key = key.join("-");
+                if (key instanceof Array) key = key.join(".");
                 fs.readFile(path.join(CACHE_FOLDER, key), { encoding:"utf8" }, function(err, cache) {
                     if (err && err.code == "ENOENT") {
                         //file is not exist
@@ -279,7 +296,7 @@ describe('Model',function() {
 
         FileCache.remove = function(key, callBack) {
             return new Promise(function(resolve, reject) {
-                if (key instanceof Array) key = key.join("-");
+                if (key instanceof Array) key = key.join(".");
                 fs.unlink(path.join(CACHE_FOLDER, key), function(err) {
                     if (err && err.code == "ENOENT") {
                         //no such file, ignores this error
